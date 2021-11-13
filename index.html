@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+    <meta charset="UTF-8">
+    <title>Songtext Reader</title>
+  </head>
+  <body>
+    <h1>Folder selection</h1>
+
+    <label for="folder">Select folder</label>
+    <input type="text" id="folder" onChange="updateList(document.getElementById('folder').value)"/>
+
+    <h2>Detected Files</h2>
+
+    <ul id="filelist">
+    </ul>
+  </body>
+</html>
+<style>
+  *{
+    margin: 0;
+    padding: 0;
+  }
+
+  #filelist li{
+    margin-top: 1px;
+    display: block;
+    width: calc(100%-2px);
+    height: 40px;
+    border: 1px solid #000;
+    padding-left: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+</style>
+<script>
+  //const scanDirectory = './res/';
+  const fs = require('fs');
+
+  var output = document.querySelector("ul");
+
+  function updateList(scanDirectory){
+    output.innerHTML = ''
+    fs.readdirSync(scanDirectory).forEach(file => {
+      var item = document.createElement("li");
+      item.setAttribute("onclick", "openFile(this.id)");
+      if(file.indexOf('.') > -1){
+        item.innerHTML = file;
+        item.setAttribute("id", scanDirectory.replace(/ /g, '" "')+ '/'  + file);
+      } else{
+        item.innerHTML = '/'+file;
+        item.setAttribute("id", '"" ' + '"' + scanDirectory + '/'  + file + '"');
+        //var image = document.createElement("i")
+        //image.setAttribute("class", "fas fa-folder")
+        //item.appendChild(image)
+      }
+      output.appendChild(item);
+    });
+  }
+
+  function openFile(file){
+    var exec = require('child_process').exec;
+
+    exec(getCommandLine() + ' ' + file);
+  }
+
+  function getCommandLine() {
+   switch (process.platform) { 
+      case 'darwin' : return 'open';
+      case 'win32' : return 'start';
+      case 'win64' : return 'start';
+      default : return 'xdg-open';
+   }
+}
+</script>
