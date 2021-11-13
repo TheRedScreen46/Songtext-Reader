@@ -3,45 +3,48 @@
   <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
     <title>Songtext Reader</title>
   </head>
   <body>
     <h1>Folder selection</h1>
 
-    <label for="folder">Select folder</label>
-    <input type="text" id="folder" onChange="updateList(document.getElementById('folder').value)"/>
+    <div id="folderSelect">
+      <label for="folder">Select folder</label>
+      <input type="text" id="folder" onChange="updateList(document.getElementById('folder').value)"/> 
+    </div>
+    
 
-    <h2>Detected Files</h2>
+    <h1>Detected Files</h1>
 
     <ul id="filelist">
     </ul>
   </body>
 </html>
-<style>
-  *{
-    margin: 0;
-    padding: 0;
-  }
-
-  #filelist li{
-    margin-top: 1px;
-    display: block;
-    width: calc(100%-2px);
-    height: 40px;
-    border: 1px solid #000;
-    padding-left: 50px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-</style>
 <script>
-  //const scanDirectory = './res/';
   const fs = require('fs');
 
   var output = document.querySelector("ul");
+  var appDataPath = process.env.HOME
+
+  fs.readFile(appDataPath + '/Documents/SongtextReader_Data.txt', 'utf8' , (err, data) => {
+    if (err) {
+      return
+    }
+    document.getElementById('folder').value = data
+    updateList(data)
+  })
+
+  function saveScanDirectory(directory){
+    try {
+      fs.writeFileSync(appDataPath + '/Documents/SongtextReader_Data.txt', directory , 'utf-8')
+    } catch(e) {
+      alert('Failed to save the save File!')
+    }
+  }
 
   function updateList(scanDirectory){
+    saveScanDirectory(scanDirectory)
     output.innerHTML = ''
     fs.readdirSync(scanDirectory).forEach(file => {
       var item = document.createElement("li");

@@ -18,12 +18,13 @@ function createWindow () {
         },
         width: 800,
         height: 600,
-        //minWidth: 800,
-        //minHeight: 600
+        minWidth: 800,
+        minHeight: 300
     })
   
     win.loadFile('index.html')
     win.removeMenu()
+    // win.webContents.openDevTools()
 
     win.on('close', () => {
         app.quit()
