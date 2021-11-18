@@ -1,5 +1,5 @@
 //Import
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron')
 const fs = require('fs');
 
 //App
@@ -11,7 +11,7 @@ app.whenReady().then(() => {
 function createWindow () {
     const win = new BrowserWindow({
         icon: __dirname + '/res/icon.ico',
-        //frame: false,
+        // frame: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
@@ -21,6 +21,8 @@ function createWindow () {
         minWidth: 800,
         minHeight: 300
     })
+
+    
   
     win.loadFile('index.html')
     win.removeMenu()
